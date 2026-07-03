@@ -21,6 +21,13 @@ const { title, description = 'Agentic AI 中文学习博客' } = Astro.props
     <link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" />
     <title>{title}</title>
+    <script is:inline>
+      try {
+        if (localStorage.getItem('agentic-sidebar-collapsed') === 'true') {
+          document.documentElement.classList.add('is-sidebar-collapsed')
+        }
+      } catch {}
+    </script>
   </head>
   <body>
     <slot />

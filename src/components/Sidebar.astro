@@ -11,7 +11,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 const withBase = (path: string) => `${base}${path}`
 ---
 
-<aside class="sidebar" aria-label="课程目录">
+<button class="sidebar-toggle" type="button" aria-controls="course-sidebar" aria-expanded="true" aria-label="收起课程目录" title="收起/展开课程目录">
+  <span aria-hidden="true">‹</span>
+</button>
+
+<aside id="course-sidebar" class="sidebar" aria-label="课程目录">
   <div class="sidebar__title">课程目录</div>
   <nav class="sidebar__nav">
     {groups.map((group) => (
@@ -30,3 +34,26 @@ const withBase = (path: string) => `${base}${path}`
     ))}
   </nav>
 </aside>
+
+<script>
+  const sidebarToggle = document.querySelector<HTMLButtonElement>('.sidebar-toggle')
+  const root = document.documentElement
+  const storageKey = 'agentic-sidebar-collapsed'
+
+  const setSidebarState = (collapsed: boolean) => {
+    root.classList.toggle('is-sidebar-collapsed', collapsed)
+    sidebarToggle?.setAttribute('aria-expanded', String(!collapsed))
+    sidebarToggle?.setAttribute('aria-label', collapsed ? '展开课程目录' : '收起课程目录')
+    sidebarToggle?.setAttribute('title', collapsed ? '展开课程目录' : '收起课程目录')
+    const glyph = sidebarToggle?.querySelector('span')
+    if (glyph) glyph.textContent = collapsed ? '›' : '‹'
+    try {
+      localStorage.setItem(storageKey, String(collapsed))
+    } catch {}
+  }
+
+  setSidebarState(root.classList.contains('is-sidebar-collapsed'))
+  sidebarToggle?.addEventListener('click', () => {
+    setSidebarState(!root.classList.contains('is-sidebar-collapsed'))
+  })
+</script>
