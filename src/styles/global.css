@@ -500,10 +500,9 @@ a {
 .section-card {
   position: relative;
   display: flex;
-  min-height: 280px;
+  min-height: 420px;
   grid-column: span 2;
   flex-direction: column;
-  justify-content: space-between;
   overflow: hidden;
   border: 1px solid rgba(184, 134, 11, 0.18);
   border-radius: 12px;
@@ -544,7 +543,7 @@ a {
 
 .section-card__index,
 .section-card h2,
-.section-card__brief,
+.section-card__art,
 .section-card__action {
   position: relative;
   z-index: 1;
@@ -569,27 +568,31 @@ a {
   line-height: 1.18;
 }
 
-.section-card__brief {
-  margin: 24px 0 18px;
-  color: var(--color-ink-muted);
-  font-size: 14px;
-  line-height: 1.75;
+.section-card__art {
+  overflow: hidden;
+  margin: 24px -8px 18px;
+  border: 1px solid rgba(184, 134, 11, 0.2);
+  border-radius: 10px;
+  aspect-ratio: 16 / 9;
+  background: #0f1420;
+  box-shadow: 0 16px 28px rgba(26, 26, 46, 0.12);
 }
 
-.section-card__brief::before {
-  content: "GPT Image Gen Prompt";
+.section-card__art img {
   display: block;
-  margin-bottom: 9px;
-  color: var(--color-gold);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.28s ease;
+}
+
+.section-card:hover .section-card__art img {
+  transform: scale(1.03);
 }
 
 .section-card__action {
   align-self: flex-start;
+  margin-top: auto;
   border-top: 1px solid rgba(184, 134, 11, 0.25);
   padding-top: 12px;
   color: var(--color-ink);
@@ -665,6 +668,6 @@ a {
   .section-card:nth-child(1),
   .section-card:nth-child(2) {
     grid-column: auto;
-    min-height: 240px;
+    min-height: 360px;
   }
 }

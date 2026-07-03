@@ -10,26 +10,26 @@ const groups = groupPages(pages)
 const firstDoc = pages.find((page) => !page.data.isReadme) ?? pages[0]
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 const withBase = (path: string) => `${base}${path}`
-const imageBriefs = new Map([
+const chapterArt = new Map([
   [
     '1. Agentic工作流简介 Introduction to Agentic Workflows',
-    '一张深色工作台上的智能体流程图，任务被拆成节点、工具调用和反馈回路，纸张质感背景，金色高亮线条，适合课程章节封面，无文字。',
+    { src: '/chapter-art/workflows.webp', alt: 'Agentic workflow diagram on a dark study desk' },
   ],
   [
     '2. 反思设计模式 Reflection Design Pattern',
-    '一个 AI 助手在镜面屏幕前检查自己的回答，旁边有评估标记和迭代箭头，冷静的蓝灰色调配暖金细节，教育插画风，无文字。',
+    { src: '/chapter-art/reflection.webp', alt: 'AI assistant reviewing its own output in a mirror-like screen' },
   ],
   [
     '3. 工具使用 Tool Use',
-    '多个数字工具模块连接到一个中心智能体，包括代码执行、数据库、邮件和 MCP 接口，清晰的信息架构插画，深墨色背景与琥珀色信号线，无文字。',
+    { src: '/chapter-art/tools.webp', alt: 'AI agent connected to multiple digital tool modules' },
   ],
   [
     '4. 构建Agentic AI的实用技巧 Practical Tips for Building Agentic AI',
-    '工程化控制台视角，展示评估、错误分析、成本和延迟指标的仪表板，版面克制、专业、可扫描，纸质纹理与深色面板结合，无文字。',
+    { src: '/chapter-art/practical.webp', alt: 'Engineering dashboard for evaluating and optimizing agentic AI systems' },
   ],
   [
     '5. 高度自治智能体的模式 Patterns for Highly Autonomous Agents',
-    '一组自主智能体在网络中协作规划，中心是任务路线图，周围是多个专门角色节点，空间感强的科技教育插画，深蓝、青绿和金色点缀，无文字。',
+    { src: '/chapter-art/autonomous.webp', alt: 'Autonomous AI agents collaborating around a central roadmap' },
   ],
 ])
 ---
@@ -50,14 +50,21 @@ const imageBriefs = new Map([
       </section>
 
       <section class="section-grid" aria-label="章节目录">
-        {groups.filter((group) => group.section !== '概览').map((group) => (
-          <a class="section-card" href={withBase(`/docs/${group.items[0].data.slug}/`)}>
-            <span class="section-card__index">{String(group.items[0].data.sectionOrder).padStart(2, '0')}</span>
-            <h2>{group.section}</h2>
-            <p class="section-card__brief">{imageBriefs.get(group.section)}</p>
-            <span class="section-card__action">进入章节</span>
-          </a>
-        ))}
+        {groups.filter((group) => group.section !== '概览').map((group) => {
+          const art = chapterArt.get(group.section)
+          return (
+            <a class="section-card" href={withBase(`/docs/${group.items[0].data.slug}/`)}>
+              <span class="section-card__index">{String(group.items[0].data.sectionOrder).padStart(2, '0')}</span>
+              <h2>{group.section}</h2>
+              {art && (
+                <figure class="section-card__art">
+                  <img src={withBase(art.src)} alt={art.alt} loading="lazy" decoding="async" />
+                </figure>
+              )}
+              <span class="section-card__action">进入章节</span>
+            </a>
+          )
+        })}
       </section>
     </main>
   </div>
