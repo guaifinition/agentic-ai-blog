@@ -1,0 +1,68 @@
+---
+interface Heading {
+  depth: number
+  slug: string
+  text: string
+}
+
+interface Props {
+  headings: Heading[]
+}
+
+const { headings } = Astro.props
+const items = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 4)
+---
+
+{items.length > 0 && (
+  <aside class="page-toc" aria-label="本页目录">
+    <div class="page-toc__title">本页目录</div>
+    <nav>
+      {items.map((heading) => (
+        <a class={`page-toc__link depth-${heading.depth}`} href={`#${heading.slug}`} data-toc-target={heading.slug}>
+          {heading.text}
+        </a>
+      ))}
+    </nav>
+  </aside>
+)}
+
+<script>
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.page-toc__link[data-toc-target]'));
+  const headings = links
+    .map((link) => document.getElementById(link.dataset.tocTarget ?? ''))
+    .filter((element): element is HTMLElement => element !== null);
+
+  if (links.length > 0 && headings.length > 0) {
+    const active = new Set<string>();
+    const setCurrent = (id: string) => {
+      for (const link of links) {
+        const isCurrent = link.dataset.tocTarget === id;
+        link.classList.toggle('is-active', isCurrent);
+        if (isCurrent) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      }
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) active.add(entry.target.id);
+          else active.delete(entry.target.id);
+        }
+        let topId = '';
+        let topY = Infinity;
+        for (const id of active) {
+          const element = document.getElementById(id);
+          if (!element) continue;
+          const y = element.getBoundingClientRect().top;
+          if (y < topY) {
+            topId = id;
+            topY = y;
+          }
+        }
+        if (topId) setCurrent(topId);
+      },
+      { rootMargin: '-20% 0px -70% 0px', threshold: 0 }
+    );
+    for (const heading of headings) observer.observe(heading);
+  }
+</script>

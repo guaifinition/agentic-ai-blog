@@ -1,0 +1,24 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const withBase = (path: string) => `${base}${path}`
+---
+
+<header class="site-header">
+  <nav class="site-header__inner">
+    <a href={withBase('/')} class="brand" aria-label="Agentic AI 首页">
+      <svg class="brand__mark" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="64" cy="36" r="8" fill="currentColor"></circle>
+        <circle cx="36" cy="64" r="6" fill="currentColor"></circle>
+        <circle cx="92" cy="64" r="6" fill="currentColor"></circle>
+        <circle cx="50" cy="92" r="5" fill="currentColor"></circle>
+        <circle cx="78" cy="92" r="5" fill="currentColor"></circle>
+        <path d="M64 44L36 58M64 44L92 58M36 70L50 87M92 70L78 87M50 92H78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>
+      </svg>
+      <span>Agentic AI</span>
+    </a>
+    <div class="site-header__links">
+      <a href={withBase('/docs/home/')}>项目首页</a>
+      <a href="https://github.com/datawhalechina/agentic-ai" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+</header>

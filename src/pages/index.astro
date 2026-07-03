@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content'
+import Header from '../components/Header.astro'
+import Sidebar from '../components/Sidebar.astro'
+import SiteLayout from '../layouts/SiteLayout.astro'
+import { groupPages, sortPages } from '../lib/pages'
+
+const pages = (await getCollection('pages')).sort(sortPages)
+const groups = groupPages(pages)
+const firstDoc = pages.find((page) => !page.data.isReadme) ?? pages[0]
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const withBase = (path: string) => `${base}${path}`
+---
+
+<SiteLayout title="Agentic AI 中文学习博客">
+  <Header />
+  <div class="app-shell">
+    <Sidebar groups={groups} />
+    <main class="home-main">
+      <section class="home-hero">
+        <p class="eyebrow">Datawhale Course Notes</p>
+        <h1>Agentic AI 中文学习博客</h1>
+        <p>基于原始 Markdown 内容生成的 Astro 静态课程站，左侧按章节组织目录，右侧文章页保留本页多级标题导航。</p>
+        <div class="home-hero__actions">
+          <a class="button-primary" href={withBase(`/docs/${firstDoc.data.slug}/`)}>开始阅读</a>
+          <a class="button-secondary" href={withBase('/docs/home/')}>查看项目介绍</a>
+        </div>
+      </section>
+
+      <section class="section-grid" aria-label="章节目录">
+        {groups.filter((group) => group.section !== '概览').map((group) => (
+          <article class="section-card">
+            <h2>{group.section}</h2>
+            <ol>
+              {group.items.map((page) => (
+                <li><a href={withBase(`/docs/${page.data.slug}/`)}>{page.data.navTitle}</a></li>
+              ))}
+            </ol>
+          </article>
+        ))}
+      </section>
+    </main>
+  </div>
+</SiteLayout>

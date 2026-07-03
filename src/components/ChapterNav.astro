@@ -1,0 +1,29 @@
+---
+import type { PageEntry } from '../lib/pages'
+
+interface Props {
+  prev?: PageEntry
+  next?: PageEntry
+}
+
+const { prev, next } = Astro.props
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const withBase = (path: string) => `${base}${path}`
+---
+
+{(prev || next) && (
+  <nav class="chapter-nav" aria-label="章节导航">
+    {prev ? (
+      <a href={withBase(`/docs/${prev.data.slug}/`)} class="chapter-nav__item">
+        <span>上一章</span>
+        <strong>{prev.data.navTitle}</strong>
+      </a>
+    ) : <div />}
+    {next ? (
+      <a href={withBase(`/docs/${next.data.slug}/`)} class="chapter-nav__item is-next">
+        <span>下一章</span>
+        <strong>{next.data.navTitle}</strong>
+      </a>
+    ) : <div />}
+  </nav>
+)}

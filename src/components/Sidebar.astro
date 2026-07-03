@@ -1,0 +1,32 @@
+---
+import type { PageEntry } from '../lib/pages'
+
+interface Props {
+  groups: Array<{ section: string; items: PageEntry[] }>
+  currentSlug?: string
+}
+
+const { groups, currentSlug = '' } = Astro.props
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const withBase = (path: string) => `${base}${path}`
+---
+
+<aside class="sidebar" aria-label="课程目录">
+  <div class="sidebar__title">课程目录</div>
+  <nav class="sidebar__nav">
+    {groups.map((group) => (
+      <details class="sidebar__group" open>
+        <summary>{group.section}</summary>
+        <ol>
+          {group.items.map((page) => (
+            <li>
+              <a class:list={['sidebar__link', page.data.slug === currentSlug && 'is-active']} href={withBase(`/docs/${page.data.slug}/`)}>
+                {page.data.navTitle}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    ))}
+  </nav>
+</aside>

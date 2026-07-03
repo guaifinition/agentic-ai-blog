@@ -1,0 +1,49 @@
+---
+import { getCollection, render } from 'astro:content'
+import Header from '../../components/Header.astro'
+import Sidebar from '../../components/Sidebar.astro'
+import PageToc from '../../components/PageToc.astro'
+import ChapterNav from '../../components/ChapterNav.astro'
+import SiteLayout from '../../layouts/SiteLayout.astro'
+import { groupPages, sortPages } from '../../lib/pages'
+
+export async function getStaticPaths() {
+  const pages = (await getCollection('pages')).sort(sortPages)
+  return pages.map((page) => ({
+    params: { slug: page.data.slug },
+    props: { page, pages },
+  }))
+}
+
+const { page, pages } = Astro.props
+const sortedPages = [...pages].sort(sortPages)
+const groups = groupPages(sortedPages)
+const currentIndex = sortedPages.findIndex((entry) => entry.id === page.id)
+const prev = currentIndex > 0 ? sortedPages[currentIndex - 1] : undefined
+const next = currentIndex >= 0 && currentIndex < sortedPages.length - 1 ? sortedPages[currentIndex + 1] : undefined
+const { Content, headings } = await render(page)
+---
+
+<SiteLayout title={`${page.data.title} | Agentic AI`} description={page.data.title}>
+  <Header />
+  <div class="app-shell">
+    <Sidebar groups={groups} currentSlug={page.data.slug} />
+    <main class="doc-main">
+      <article class="doc-article">
+        <header class="doc-header">
+          <div class="doc-meta">
+            <span>{page.data.section}</span>
+            {!page.data.isReadme && <span>{page.data.sourcePath}</span>}
+          </div>
+          <h1>{page.data.title}</h1>
+          <a class="edit-link" href={`https://github.com/datawhalechina/agentic-ai/blob/main/${page.data.sourcePath}`} target="_blank" rel="noopener">在 GitHub 编辑此页</a>
+        </header>
+        <div class="prose-content">
+          <Content />
+        </div>
+        <ChapterNav prev={prev} next={next} />
+      </article>
+      <PageToc headings={headings} />
+    </main>
+  </div>
+</SiteLayout>

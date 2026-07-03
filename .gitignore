@@ -1,0 +1,8 @@
+node_modules/
+*.log
+agentic-ai/.vitepress/dist/
+agentic-ai/.vitepress/cache/
+dist/
+.astro/
+src/content/generated/
+public/images/
