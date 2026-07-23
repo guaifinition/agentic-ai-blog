@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content'
+import Header from '../components/Header.astro'
+import PageToc from '../components/PageToc.astro'
+import SiteLayout from '../layouts/SiteLayout.astro'
+
+const entries = await getCollection('featured')
+const article = entries.find((entry) => entry.data.slug === 'liang-wenfeng') ?? entries[0]
+if (!article) throw new Error('Featured article not found')
+const { Content, headings } = await render(article)
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+---
+
+<SiteLayout title="梁文锋口述：愿景、开源与克制" description="梁文锋口述 ASR 完整校订稿">
+  <Header />
+  <div class="standalone-wrap">
+    <main class="standalone-main">
+      <article class="doc-article standalone-article">
+        <a class="standalone-back" href={`${base}/`}>← 返回 Agentic AI</a>
+        <header class="doc-header">
+          <div class="doc-meta"><span>FEATURED ESSAY</span><span>ASR 校订整理稿</span></div>
+          <h1>{article.data.title}</h1>
+          <p class="standalone-lede">关于愿景、开源、合理利润与克制的完整口述整理。</p>
+          <div class="standalone-note">本页是独立专题页面，不属于博客章节目录。内容按附件原文保留，仅进行 ASR 校订与排版整理。</div>
+        </header>
+        <div class="prose-content"><Content /></div>
+      </article>
+      <PageToc headings={headings} />
+    </main>
+  </div>
+</SiteLayout>

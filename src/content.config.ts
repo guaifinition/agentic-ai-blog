@@ -15,4 +15,13 @@ const pages = defineCollection({
   }),
 })
 
-export const collections = { pages }
+const featured = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/featured' }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string(),
+    sourcePath: z.string(),
+  }),
+})
+
+export const collections = { pages, featured }
